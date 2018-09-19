@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GPSManager : MonoBehaviour
 {
@@ -12,6 +13,11 @@ public class GPSManager : MonoBehaviour
     public float headingAccuracy;
 
     public bool UseFakeLocation;
+
+    public Text TextDisplay;
+
+    private bool _isCompassPaused;
+    private bool _isGPSPaused;
 
     [HideInInspector]
     public bool isRunning = true;
@@ -105,25 +111,49 @@ public class GPSManager : MonoBehaviour
     {
         if (Input.location.status == LocationServiceStatus.Running)
         {
-            var latitude = Input.location.lastData.latitude;
-            var longitude = Input.location.lastData.longitude;
-            var altitude = Input.location.lastData.altitude;
-            position = new Vector3(latitude, altitude, longitude);
-
-            var hAcc = Input.location.lastData.horizontalAccuracy;
-            var vAcc = Input.location.lastData.verticalAccuracy;
-            positionAccuracy = new Vector3(hAcc, vAcc, hAcc);
-
-            heading = Input.compass.trueHeading;
-            headingAccuracy = Input.compass.headingAccuracy;
+            if (!_isGPSPaused)
+            {
+                var latitude = Input.location.lastData.latitude;
+                var longitude = Input.location.lastData.longitude;
+                var altitude = Input.location.lastData.altitude;
+                position = new Vector3(latitude, altitude, longitude);
+            }
+            
+            if (!_isCompassPaused)
+            {
+                var hAcc = Input.location.lastData.horizontalAccuracy;
+                var vAcc = Input.location.lastData.verticalAccuracy;
+                positionAccuracy = new Vector3(hAcc, vAcc, hAcc);
+                heading = Input.compass.trueHeading;
+                headingAccuracy = Input.compass.headingAccuracy;
+            }            
 
             ServiceStatus = Input.location.status;
 
-            Debug.Log(string.Format("Lat: {0} Long: {1}", latitude, longitude));
+            Debug.Log(string.Format("Lat: {0} Long: {1} Alt: {2}\nDir: {3}", position.x, position.z, position.y, heading));
+
+            if (TextDisplay)
+            {
+                TextDisplay.text = string.Format("Lat: {0} Long: {1} Alt: {2}\nDir: {3}", position.x, position.z, position.y, heading);
+            }
         }
         else
         {
             Debug.Log("GPS is " + Input.location.status);
         }
+
+        
+    }
+
+    public void ToggleGPSPause(Button button)
+    {
+        _isGPSPaused = !_isGPSPaused;
+        button.GetComponentInChildren<Text>().text = _isGPSPaused ? "Unpause GPS" : "Pause GPS";
+    }
+
+    public void ToggleCompassPause(Button button)
+    {
+        _isCompassPaused = !_isCompassPaused;
+        button.GetComponentInChildren<Text>().text = _isCompassPaused ? "Unpause Compass" : "Pause Compass";
     }
 }
