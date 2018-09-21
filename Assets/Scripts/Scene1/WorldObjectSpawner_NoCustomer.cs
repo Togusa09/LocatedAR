@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class WorldObjectSpawner_NoCompass : MonoBehaviour
@@ -9,7 +10,8 @@ public class WorldObjectSpawner_NoCompass : MonoBehaviour
 
     private bool isObjectSpawned;
 
-    private float degreeInMeteres = 111111;
+    private float degreesLatitudeInMeters = 111132;
+    private float degreesLongitudeInMetersAtEquator = 111319.9f;
 
     public Text OutputText;
 
@@ -18,14 +20,19 @@ public class WorldObjectSpawner_NoCompass : MonoBehaviour
 		
 	}
 	
+    private float GetLongitudeDegreeDistance(float latitude)
+    {
+        return degreesLongitudeInMetersAtEquator * Mathf.Cos(latitude * (Mathf.PI / 180));
+    }
+
 	// Update is called once per frame
 	void Update () {
 	    if (!isObjectSpawned && GPSManager_NoCompass.Instance.ServiceStatus == LocationServiceStatus.Running)
 	    {
 	        var gpsLat = GPSManager_NoCompass.Instance.latitude;
 	        var gpsLon = GPSManager_NoCompass.Instance.longitude;
-	        var latOffset = (latitude - gpsLat) * degreeInMeteres;
-	        var lonOffset = (longitutde - gpsLon) * degreeInMeteres;
+	        var latOffset = (latitude - gpsLat) * degreesLatitudeInMeters;
+	        var lonOffset = (longitutde - gpsLon) * GetLongitudeDegreeDistance(latitude);
 
 	        var obj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             obj.transform.position = new Vector3(latOffset, 0, lonOffset);

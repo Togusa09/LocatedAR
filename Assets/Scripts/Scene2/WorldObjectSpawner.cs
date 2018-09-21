@@ -8,8 +8,6 @@ public class WorldObjectSpawner : MonoBehaviour
 
     private bool isObjectSpawned;
 
-    private double degreeInMeteres = 111111;
-
     public Text OutputText;
 
     public GameObject WorldRoot;
@@ -27,13 +25,10 @@ public class WorldObjectSpawner : MonoBehaviour
             var objectPosition = new Vector3d(Position);
             var gpsAlt = 0;
 
-            var offset = (objectPosition - gpsPosition) * degreeInMeteres;
-
 	        var heading = MathHelper.DegreesToRadians(GPSManager.Instance.heading);
             // Need to rotate the the the offset to align to the world coords
 
-            var t = Quaterniond.FromEulerAngles(0, -heading, 0);
-            var rotatedOffset = t * offset;
+            var t = Quaterniond.FromEulerAngles(0, heading, 0);
 
             var obj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             

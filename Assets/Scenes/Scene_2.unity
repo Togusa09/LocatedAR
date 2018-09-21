@@ -545,7 +545,7 @@ MonoBehaviour:
   positionAccuracy: {x: 0, y: 0, z: 0}
   heading: 70
   headingAccuracy: 0
-  UseFakeLocation: 1
+  UseFakeLocation: 0
   TextDisplay: {fileID: 104585110}
   isRunning: 1
   ServiceStatus: 0

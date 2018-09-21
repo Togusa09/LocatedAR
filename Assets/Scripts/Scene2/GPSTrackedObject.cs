@@ -1,16 +1,23 @@
 ﻿using OpenTK;
+using System;
 using UnityEngine;
 
 public class GPSTrackedObject : MonoBehaviour {
     public Vector3 GpsPosition;
     public GPSManager GPSManager;
 
-    private double degreeInMeteres = 111111;
+    private float degreesLatitudeInMeters = 111132;
+    private float degreesLongitudeInMetersAtEquator = 111319.9f;
 
     // Use this for initialization
     void Start () {
 		
 	}
+
+    private double GetLongitudeDegreeDistance(double latitude)
+    {
+        return degreesLongitudeInMetersAtEquator * Math.Cos(latitude * (Math.PI / 180));
+    }
 
     // Update is called once per frame
     void Update()
@@ -21,7 +28,7 @@ public class GPSTrackedObject : MonoBehaviour {
             var objectPosition = new Vector3d(GpsPosition);
             var gpsAlt = 0;
 
-            var offset = (objectPosition - gpsPosition) * degreeInMeteres;
+            var offset = (objectPosition - gpsPosition) * new Vector3d(degreesLatitudeInMeters, 1, GetLongitudeDegreeDistance(gpsPosition.X));
 
             var heading = MathHelper.DegreesToRadians(GPSManager.heading);
             // Need to rotate the the the offset to align to the world coords
