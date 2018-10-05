@@ -17,12 +17,6 @@ public class GPSManager_NoCompass : MonoBehaviour
 
     private void Start()
     {
-        //var lat = -27.52587f.ConvertToRadians();
-        //var lon = 152.9883f.ConvertToRadians();
-
-        //var t1 = GPSEncoder.FromDegreesToVector3(new LatLon(lat, lon, 0), 6371000);
-        //var t2 = GPSEncoder.FromVector3ToDegrees(t1, 6371000);
-
         Instance = this;
         DontDestroyOnLoad(gameObject);
         StartCoroutine(StartLocationService());
@@ -31,6 +25,7 @@ public class GPSManager_NoCompass : MonoBehaviour
     private IEnumerator StartLocationService()
     {
         ServiceStatus = LocationServiceStatus.Initializing;
+        // Allow a fake location to be returned when testing on a device that doesn't have GPS
         if (UseFakeLocation)
         {
             Debug.Log(string.Format("Using fake GPS location lat:{0} lon:{1}", latitude, longitude));
@@ -38,14 +33,13 @@ public class GPSManager_NoCompass : MonoBehaviour
             yield break;
         }
 
-        yield return new WaitForSeconds(5);
-
         if (!Input.location.isEnabledByUser)
         {
             Debug.Log("user has not enabled gps");
             yield break;
         }
 
+        // Wait for the GPS to start up so there's time to connect
         Input.location.Start();
 
         yield return new WaitForSeconds(5);
@@ -63,28 +57,21 @@ public class GPSManager_NoCompass : MonoBehaviour
             yield break;
         }
 
+        // If gps hasn't started by now, just give up
         ServiceStatus = Input.location.status;
         if (Input.location.status == LocationServiceStatus.Failed)
         {
-            Debug.Log("Unable to dtermine device location");
+            Debug.Log("Unable to determine device location");
             yield break;
         }
 
-        latitude = Input.location.lastData.latitude;
-        longitude = Input.location.lastData.longitude;
-
-
+        //Loop forever to get GPS updates
         while (isRunning)
         {
             yield return new WaitForSeconds(2);
             UpdateGPS();
         }
     }
-
-    //void Update()
-    //{
-    //    StartCoroutine(UpdateGPS());
-    //}
 
     private void UpdateGPS()
     {

@@ -30,12 +30,6 @@ public class GPSManager : MonoBehaviour
 
     private void Start()
     {
-        //var lat = -27.52587f.ConvertToRadians();
-        //var lon = 152.9883f.ConvertToRadians();
-
-        //var t1 = GPSEncoder.FromDegreesToVector3(new LatLon(lat, lon, 0), 6371000);
-        //var t2 = GPSEncoder.FromVector3ToDegrees(t1, 6371000);
-
         Instance = this;
         DontDestroyOnLoad(gameObject);
         StartCoroutine(StartLocationService());
@@ -101,14 +95,9 @@ public class GPSManager : MonoBehaviour
         while (isRunning)
         {
             UpdateGPS();
-            yield return new WaitForSeconds(2);
+            yield return new WaitForSeconds(0.1f);
         }
     }
-
-    //void Update()
-    //{
-    //    StartCoroutine(UpdateGPS());
-    //}
 
     private void UpdateGPS()
     {

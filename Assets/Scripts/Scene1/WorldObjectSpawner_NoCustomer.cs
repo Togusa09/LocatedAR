@@ -4,9 +4,8 @@ using UnityEngine.UI;
 
 public class WorldObjectSpawner_NoCompass : MonoBehaviour
 {
-
     public float latitude;
-    public float longitutde;
+    public float longitude;
 
     private bool isObjectSpawned;
 
@@ -32,7 +31,7 @@ public class WorldObjectSpawner_NoCompass : MonoBehaviour
 	        var gpsLat = GPSManager_NoCompass.Instance.latitude;
 	        var gpsLon = GPSManager_NoCompass.Instance.longitude;
 	        var latOffset = (latitude - gpsLat) * degreesLatitudeInMeters;
-	        var lonOffset = (longitutde - gpsLon) * GetLongitudeDegreeDistance(latitude);
+	        var lonOffset = (longitude - gpsLon) * GetLongitudeDegreeDistance(latitude);
 
 	        var obj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             obj.transform.position = new Vector3(latOffset, 0, lonOffset);

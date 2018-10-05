@@ -31,10 +31,6 @@ public class WorldObjectSpawner : MonoBehaviour
             var t = Quaterniond.FromEulerAngles(0, heading, 0);
 
             var obj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            
-            //var floatPosition = new Vector3((float)rotatedOffset.X, (float)rotatedOffset.Y, (float)rotatedOffset.Z);
-	        //obj.transform.localPosition = floatPosition;
-            //obj.transform.localScale = new Vector3(4, 4, 4);
 
             var gpsObj = obj.AddComponent<GPSTrackedObject>();
             gpsObj.GpsPosition = Position;
